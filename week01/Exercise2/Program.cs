@@ -1,5 +1,5 @@
 using System;
-    
+
 class Program
 {
     static void Main(string[] args)
@@ -34,9 +34,9 @@ class Program
         string sign = "";
         int lastDigit = percent % 10;
 
-        if (letter != 'F')
+        if (letter != "F")
         {
-            if (letter == 'A')
+            if (letter == "A")
             {
                 // A can only have a minus or none
                 if (lastDigit < 3)
