@@ -1,32 +1,37 @@
-public class Reference
+using System;
+
+class Reference
 {
     private string _book;
     private int _chapter;
-    private int _startVerse;
-    private int? _endVerse;
+    private int _verse;
+    private int _endVerse;
 
     public Reference(string book, int chapter, int verse)
     {
         _book = book;
         _chapter = chapter;
-        _startVerse = verse;
+        _verse = verse;
+        _endVerse = verse; // Single verse
     }
 
-    public Reference(string book, int chapter, int startVerse, int endVerse)
-        : this(book, chapter, startVerse)
+    public Reference(string book, int chapter, int verse, int endVerse)
     {
+        _book = book;
+        _chapter = chapter;
+        _verse = verse;
         _endVerse = endVerse;
     }
 
     public string GetDisplayText()
     {
-        return _endVerse.HasValue ?
-            $"{_book} {_chapter}:{_startVerse}-{_endVerse}" :
-            $"{_book} {_chapter}:{_startVerse}";
+        if (_verse == _endVerse)
+        {
+            return $"{_book} {_chapter}:{_verse}";
+        }
+        else
+        {
+            return $"{_book} {_chapter}:{_verse}-{_endVerse}";
+        }
     }
-
-    public string GetReferenceId() => 
-        _endVerse.HasValue ? 
-        $"{_book}_{_chapter}_{_startVerse}_{_endVerse}" : 
-        $"{_book}_{_chapter}_{_startVerse}";
 }
