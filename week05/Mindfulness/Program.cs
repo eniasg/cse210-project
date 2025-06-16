@@ -5,70 +5,53 @@ using System.Linq;
 using System.Threading;
 
 
-// Exceeded core requirements:
-// - Added GratitudeActivity: a new activity guiding the user to express gratitude.
-// - Session tracking: counts how many times each activity was run during the session.
-// - Intelligent prompt/question reuse: ensures all items are shown before repeating.
-// - Enhanced breathing animation: dynamic breathing text that grows and shrinks.
-// - Activity log system: logs activity sessions to a text file and loads previous logs.
+// Creativity and Exceeding Requirements:
+// Activity log tracks usage statistics and is viewable through the main menu
+
 
 class Program
-{
-    private static Dictionary<string, int> activityCounts = new();
-    private static string logFile = "activity_log.txt";
-    
+{    
     static void Main(string[] args)
     {
-        LoadLog();
-
-        List<Activity> activities = new List<Activity>
-        {
-            new BreathingActivity(),
-            new ReflectingActivity(),
-            new ListingActivity(),
-            new GratitudeActivity()
-        };
-
+        Console.Title = "Mindfulness Program";
+        Console.ForegroundColor = ConsoleColor.DarkBlue;
+        
         while (true)
         {
             Console.Clear();
-            Console.WriteLine("Mindfulness Activities:");
-            for (int i = 0; i < activities.Count; i++)
-                Console.WriteLine($"{i + 1}. {activities[i].GetType().Name.Replace("Activity", "")}");
-            Console.WriteLine("0. Quit");
-            Console.Write("Choose an option: ");
-
-            string input = Console.ReadLine();
-            if (input == "0") break;
-
-            if (int.TryParse(input, out int choice) && choice >= 1 && choice <= activities.Count)
+            Console.WriteLine("=== Mindfulness Activities ===");
+            Console.WriteLine("1. Deep Breathing Activity");
+            Console.WriteLine("2. Reflection Activity");
+            Console.WriteLine("3. Positive Listing Activity");
+            Console.WriteLine("4. View Activity Log");
+            Console.WriteLine("5. Exit");
+            Console.WriteLine("==============================");
+            Console.Write("Select an option: ");
+            
+            string choice = Console.ReadLine();
+            
+            switch (choice)
             {
-                var activity = activities[choice - 1];
-                activity.Run();
-                string key = activity.GetType().Name;
-                if (!activityCounts.ContainsKey(key))
-                    activityCounts[key] = 0;
-                activityCounts[key]++;
-                SaveLog();
+                case "1":
+                    new BreathingActivity().Run();
+                    break;
+                case "2":
+                    new ReflectionActivity().Run();
+                    break;
+                case "3":
+                    new ListingActivity().Run();
+                    break;
+                case "4":
+                    Activity.ShowActivityLog();
+                    break;
+                case "5":
+                    Console.WriteLine("\nThank you for using the Mindfulness Program. Have a peaceful day!");
+                    return;
+                default:
+                    Console.WriteLine("Invalid option. Please select 1-5.");
+                    Thread.Sleep(1500);
+                    break;
             }
-        }
-    }
-
-    static void SaveLog()
-    {
-        using StreamWriter writer = new StreamWriter(logFile);
-        foreach (var pair in activityCounts)
-            writer.WriteLine($"{pair.Key}:{pair.Value}");
-    }
-
-    static void LoadLog()
-    {
-        if (!File.Exists(logFile)) return;
-        foreach (var line in File.ReadAllLines(logFile))
-        {
-            var parts = line.Split(':');
-            if (parts.Length == 2 && int.TryParse(parts[1], out int count))
-                activityCounts[parts[0]] = count;
         }
     }
 }

@@ -1,30 +1,28 @@
-class BreathingActivity : Activity
+using System;
+
+public class BreathingActivity : Activity
 {
-    public BreathingActivity()
-    {
-        _name = "Breathing";
-        _description = "This activity will help you relax by guiding you through breathing in and out slowly.";
-    }
+    public BreathingActivity() : base(
+        "Deep Breathing", 
+        "This activity will help you relax by walking you through breathing in and out slowly. Clear your mind and focus on your breathing."
+    ) { }
 
     public override void Run()
     {
-        StartActivity();
-        int cycle = _duration / 6;
-        for (int i = 0; i < cycle; i++)
+        Start();
+        
+        int cycles = (int)Math.Ceiling((double)Duration / 10);
+        if (cycles == 0) cycles = 1;
+        
+        for (int i = 0; i < cycles; i++)
         {
-            ShowBreathing("Breathe in", 3);
-            ShowBreathing("Breathe out", 3);
+            Console.Write("\nBreathe in... ");
+            ShowCountdown(4);
+            
+            Console.Write("Breathe out... ");
+            ShowCountdown(6);
         }
-        EndActivity();
-    }
-
-    private void ShowBreathing(string message, int seconds)
-    {
-        for (int i = 1; i <= 10; i++)
-        {
-            Console.Clear();
-            Console.WriteLine($"{message} {new string('.', i)}");
-            Thread.Sleep(seconds * 100 / 10);
-        }
+        
+        End();
     }
 }

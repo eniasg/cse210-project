@@ -1,49 +1,48 @@
-class ListingActivity : Activity
+using System;
+using System.Collections.Generic;
+
+public class ListingActivity : Activity
 {
-    private List<string> _prompts = new List<string>
+    private List<string> Prompts = new List<string>
     {
         "Who are people that you appreciate?",
         "What are personal strengths of yours?",
-        "Who are people you helped this week?",
-        "What are some things you're grateful for?"
+        "Who are people that you have helped this week?",
+        "When have you felt the Holy Ghost this month?",
+        "Who are some of your personal heroes?"
     };
-    private List<string> _usedPrompts = new();
 
-    public ListingActivity()
-    {
-        _name = "Listing";
-        _description = "This activity will help you reflect on the good things in your life by listing them.";
-    }
+    public ListingActivity() : base(
+        "Positive Listing", 
+        "This activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area."
+    ) { }
 
     public override void Run()
     {
-        StartActivity();
-        string prompt = GetUnusedPrompt(_prompts, ref _usedPrompts);
-        Console.WriteLine(prompt);
-        Console.WriteLine("You may begin in:");
+        Start();
+        
+        Random rand = new Random();
+        Console.WriteLine("\nList as many responses as you can to:");
+        Console.WriteLine($"\n--- {Prompts[rand.Next(Prompts.Count)]} ---");
+        
+        Console.Write("\nStarting in ");
         ShowCountdown(5);
-
-        List<string> responses = new();
-        DateTime end = DateTime.Now.AddSeconds(_duration);
-        while (DateTime.Now < end)
+        
+        int itemCount = 0;
+        Console.WriteLine("\nBegin listing now:");
+        
+        DateTime endTime = DateTime.Now.AddSeconds(Duration);
+        while (DateTime.Now < endTime)
         {
             Console.Write("> ");
-            string input = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(input))
-                responses.Add(input);
+            string item = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(item))
+            {
+                itemCount++;
+            }
         }
-
-        Console.WriteLine($"You listed {responses.Count} items.");
-        EndActivity();
-    }
-
-    private string GetUnusedPrompt(List<string> source, ref List<string> used)
-    {
-        if (used.Count == source.Count)
-            used.Clear();
-        var remaining = source.Except(used).ToList();
-        string item = remaining[new Random().Next(remaining.Count)];
-        used.Add(item);
-        return item;
+        
+        Console.WriteLine($"\nYou listed {itemCount} items!");
+        End();
     }
 }

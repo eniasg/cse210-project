@@ -1,35 +1,55 @@
-class Activity
-{
-    protected string _name;
-    protected string _description;
-    protected int _duration;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 
-    public void StartActivity()
+public abstract class Activity
+{
+    protected string Name;
+    protected string Description;
+    protected int Duration;
+    protected static Dictionary<string, int> ActivityLog = new Dictionary<string, int>();
+
+    public Activity(string name, string description)
     {
-        Console.Clear();
-        Console.WriteLine($"Starting {_name} Activity");
-        Console.WriteLine(_description);
-        Console.Write("Enter duration (in seconds): ");
-        _duration = int.Parse(Console.ReadLine());
-        Console.WriteLine("Prepare to begin...");
-        ShowSpinner(3);
+        Name = name;
+        Description = description;
     }
 
-    public void EndActivity()
+    public void Start()
     {
-        Console.WriteLine("\nWell done!");
-        Console.WriteLine($"You have completed the {_name} activity for {_duration} seconds.");
+        Console.Clear();
+        Console.WriteLine($"Starting {Name} Activity");
+        Console.WriteLine(Description);
+        Console.Write("Enter duration in seconds: ");
+        Duration = int.Parse(Console.ReadLine());
+        
+        Console.WriteLine("\nPrepare to begin...");
+        ShowSpinner(3);
+        
+        // Log activity
+        if (ActivityLog.ContainsKey(Name))
+            ActivityLog[Name]++;
+        else
+            ActivityLog.Add(Name, 1);
+    }
+
+    public void End()
+    {
+        Console.WriteLine("\nGreat job! You've completed the activity.");
+        ShowSpinner(2);
+        Console.WriteLine($"Activity: {Name}");
+        Console.WriteLine($"Duration: {Duration} seconds");
         ShowSpinner(3);
     }
 
     protected void ShowSpinner(int seconds)
     {
-        for (int i = 0; i < seconds * 4; i++)
+        for (int i = 0; i < seconds; i++)
         {
-            Console.Write("|/-\\"[i % 4]);
-            Thread.Sleep(250);
-            Console.Write("\b");
+            Console.Write("• ");
+            Thread.Sleep(1000);
         }
+        Console.WriteLine();
     }
 
     protected void ShowCountdown(int seconds)
@@ -38,9 +58,20 @@ class Activity
         {
             Console.Write($"{i} ");
             Thread.Sleep(1000);
-            Console.Write("\b\b\b");
         }
+        Console.WriteLine();
     }
 
     public abstract void Run();
+    
+    public static void ShowActivityLog()
+    {
+        Console.WriteLine("\n=== ACTIVITY LOG ===");
+        foreach (var entry in ActivityLog)
+        {
+            Console.WriteLine($"{entry.Key}: {entry.Value} times");
+        }
+        Console.WriteLine("Press Enter to continue...");
+        Console.ReadLine();
+    }
 }
