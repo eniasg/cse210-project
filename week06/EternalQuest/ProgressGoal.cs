@@ -1,35 +1,36 @@
+using System;
 public class ProgressGoal : Goal
 {
     private int _currentProgress;
-    private int _target;
-    
-    public ProgressGoal(string name, string description, string pointsPerStep, 
-                       int target) : base(name, description, pointsPerStep)
+    private int _targetProgress;
+    private int _progressPoints;
+
+    public ProgressGoal(string name, string description, int completionPoints, int progressPoints, int targetProgress)
+        : base(name, description, completionPoints)
     {
         _currentProgress = 0;
-        _target = target;
+        _targetProgress = targetProgress;
+        _progressPoints = progressPoints;
     }
 
     public override int RecordEvent()
     {
-        if (_currentProgress < _target)
+        _currentProgress++;
+        if (_currentProgress >= _targetProgress)
         {
-            _currentProgress++;
-            return GetPoints();
+            _isComplete = true;
+            return _points;
         }
-        return 0;
+        return _progressPoints;
     }
-
-    public override bool IsComplete() => _currentProgress >= _target;
 
     public override string GetDetailsString()
     {
-        return base.GetDetailsString() + 
-               $" - Progress: {_currentProgress}/{_target}";
+        return $"{GetCheckbox()} {_shortName}: {_description} (Progress: {_currentProgress}/{_targetProgress})";
     }
 
     public override string GetStringRepresentation()
     {
-        return $"ProgressGoal:{_shortName}|{_description}|{_points}|{_target}|{_currentProgress}";
+        return $"ProgressGoal|{_shortName}|{_description}|{_points}|{_progressPoints}|{_targetProgress}|{_currentProgress}";
     }
 }

@@ -1,22 +1,21 @@
+using System;
 public class NegativeGoal : Goal
 {
-    public NegativeGoal(string name, string description, string penalty) 
-        : base(name, description, penalty) { }
+    public NegativeGoal(string name, string description, int points)
+        : base(name, description, points) { }
 
     public override int RecordEvent()
     {
-        return -GetPoints();  // Deduct points
+        return -_points; // Deduct points for negative habits
     }
-
-    public override bool IsComplete() => false;
 
     public override string GetDetailsString()
     {
-        return base.GetDetailsString() + " [⚠️ Penalty]";
+        return $"{GetCheckbox()} {_shortName}: {_description} (Warning: Deducts points!)";
     }
 
     public override string GetStringRepresentation()
     {
-        return $"NegativeGoal:{_shortName}|{_description}|{_points}";
+        return $"NegativeGoal|{_shortName}|{_description}|{_points}";
     }
 }
